@@ -22,17 +22,17 @@ describe "Items API" do
 
     expect(response).to be_successful
 
-    expect(item).to have_key(:id)
-    expect(item[:id]).to eq(id)
+    expect(item[:data]).to have_key(:id)
+    expect(item[:data][:id].to_i).to eq(id)
 
-    expect(item).to have_key(:name)
-    expect(item[:name]).to be_a(String)
+    expect(item[:data][:attributes]).to have_key(:name)
+    expect(item[:data][:attributes][:name]).to be_a(String)
 
-    expect(item).to have_key(:description)
-    expect(item[:description]).to be_a String
+    expect(item[:data][:attributes]).to have_key(:description)
+    expect(item[:data][:attributes][:description]).to be_a String
 
-    expect(item).to have_key(:unit_price)
-    expect(item[:unit_price]).to be_a Float
+    expect(item[:data][:attributes]).to have_key(:unit_price)
+    expect(item[:data][:attributes][:unit_price]).to be_a Float
   end
 
   it "can create a new item" do
@@ -49,10 +49,10 @@ describe "Items API" do
     response_body = JSON.parse(response.body, symbolize_names: true)
 
     expect(response).to be_successful
-    expect(response_body[:id]).to be_an Integer
-    expect(response_body[:name]).to eq(item_params[:name])
-    expect(response_body[:description]).to eq(item_params[:description])
-    expect(response_body[:unit_price]).to eq(item_params[:unit_price])
+    expect(response_body[:data][:id].to_i).to be_an Integer
+    expect(response_body[:data][:attributes][:name]).to eq(item_params[:name])
+    expect(response_body[:data][:attributes][:description]).to eq(item_params[:description])
+    expect(response_body[:data][:attributes][:unit_price]).to eq(item_params[:unit_price])
   end
 
   it "can update an existing item" do
@@ -81,5 +81,17 @@ describe "Items API" do
     expect(response).to be_successful
     expect(Item.count).to eq(0)
     expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
+  it 'get the merchant data for a given item id' do 
+    merchant = create(:merchant)
+    item = create(:item, merchant_id: merchant.id)
+
+    get "/api/v1/items/#{item.id}/merchant"
+
+    json = JSON.parse(response.body, symbolize_names: true)
+
+    expect(response).to be_successful
+    expect(response.status).to eq(200)
   end
 end

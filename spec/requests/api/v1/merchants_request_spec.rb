@@ -45,7 +45,7 @@ describe "Merchants API" do
 
     json[:data].each do |item|
       expect(item[:attributes].keys.length).to eq(4)
-      expect(item_ids.include?(item[:attributes][:id].to_i)).to eq(true)
+      expect(item_ids.include?(item[:attributes][:merchant_id])).to eq(true)
     end
   end
 end
