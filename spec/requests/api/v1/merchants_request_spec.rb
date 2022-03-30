@@ -12,22 +12,40 @@ describe "Merchants API" do
   end
 
   it 'gets one merchant by id' do
-    id = create(:merchant).id
+    merchant = create(:merchant)
 
-    get "/api/v1/merchants/#{id}"
+    get "/api/v1/merchants/#{merchant.id}"
 
-    merchant = JSON.parse(response.body, symbolize_names: true)
+    json = JSON.parse(response.body, symbolize_names: true)
 
     expect(response).to be_successful
 
-    expect(merchant).to have_key(:id)
-    expect(merchant[:id]).to eq(id)
+    expect(json[:data]).to have_key(:id)
+    expect(json[:data][:id].to_i).to eq(merchant.id)
 
-    expect(merchant).to have_key(:name)
-    expect(merchant[:name]).to be_a(String)
+    expect(json[:data][:attributes]).to have_key(:name)
+    expect(json[:data][:attributes][:name]).to eq(merchant.name)
   end
 
-  # it 'gets all items for a given merchant id' do
+  it 'gets all items based on merchant id' do
+    merchant = create(:merchant)
+    items = create_list(:item, 3, merchant_id: merchant.id)
 
-  # end
+    get "/api/v1/merchants/#{merchant.id}/items"
+
+    json = JSON.parse(response.body, symbolize_names: true)
+
+    expect(response).to be_successful
+    expect(response.status).to eq(200)
+    # expect(json).to have_key(:data)
+    item_ids = items.map do |item|
+      item.id
+    end
+    # item_ids = items.map(&:id)
+
+    json[:data].each do |item|
+      expect(item[:attributes].keys.length).to eq(4)
+      expect(item_ids.include?(item[:attributes][:id].to_i)).to eq(true)
+    end
+  end
 end

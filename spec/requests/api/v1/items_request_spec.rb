@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe "Items API" do
   it "gets all items" do
-    m1 = Merchant.create(name: 'Little Jerry')
-    create_list(:item, 3)
+    merchant1 = Merchant.create(name: 'Bosco')
+    create_list(:item, 3, merchant_id: merchant1.id)
 
     get '/api/v1/items'
 
@@ -13,8 +13,8 @@ describe "Items API" do
   end
 
   it 'gets one item by id' do
-    create_list(:merchant, 2)
-    id = create(:item).id
+    merchant1 = Merchant.create(name: 'Bosco')
+    id = create(:item, merchant_id: merchant1.id).id
 
     get "/api/v1/items/#{id}"
 
@@ -36,24 +36,28 @@ describe "Items API" do
   end
 
   it "can create a new item" do
+    merchant1 = Merchant.create(name: 'Bosco')
     item_params = ({
-                    name: 'Little Jerry',
-                    description: 'A little chicken named Jerry',
-                    unit_price: 25.6
+                    name: 'Chocolate Syrup',
+                    description: 'Georges Password',
+                    unit_price: 25.6,
+                    merchant_id: merchant1.id
                   })
     headers = {"CONTENT_TYPE" => "application/json"}
   
     post "/api/v1/items", headers: headers, params: JSON.generate(item: item_params)
-    created_item = Item.last
-  
+    response_body = JSON.parse(response.body, symbolize_names: true)
+
     expect(response).to be_successful
-    expect(created_item.name).to eq(item_params[:name])
-    expect(created_item.description).to eq(item_params[:description])
-    expect(created_item.unit_price).to eq(item_params[:unit_price])
+    expect(response_body[:id]).to be_an Integer
+    expect(response_body[:name]).to eq(item_params[:name])
+    expect(response_body[:description]).to eq(item_params[:description])
+    expect(response_body[:unit_price]).to eq(item_params[:unit_price])
   end
 
   it "can update an existing item" do
-    id = create(:item).id
+    merchant1 = Merchant.create(name: 'Bosco')
+    id = create(:item, merchant_id: merchant1.id).id
     previous_name = Item.last.name
     item_params = { name: "Summer of George" }
     headers = {"CONTENT_TYPE" => "application/json"}
@@ -67,7 +71,8 @@ describe "Items API" do
   end
 
   it "can destroy an item" do
-    item = create(:item)
+    merchant1 = Merchant.create(name: 'Bosco')
+    item = create(:item, merchant_id: merchant1.id)
   
     expect(Item.count).to eq(1)
   
