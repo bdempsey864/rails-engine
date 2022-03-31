@@ -37,7 +37,6 @@ describe "Merchants API" do
 
     expect(response).to be_successful
     expect(response.status).to eq(200)
-    # expect(json).to have_key(:data)
     item_ids = items.map do |item|
       item.id
     end
