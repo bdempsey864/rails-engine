@@ -1,24 +1,34 @@
-# README
+###  Rails Engine Lite
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Table of contents
+* [General info](#general-info)
+* [Screenshots](#screenshots)
+* [Learning Goals](#learning-goals)
+* [Technologies](#technologies)
+* [Setup](#setup)
+* [Features](#features)
+* [Status](#status)
+* [Contact](#contact)
 
-Things you may want to cover:
+## General info
+The purpose of this project is to expose data that powers a site through an API that the front end will consume. The front and back ends of this application are separate and communicate via APIs.
 
-* Ruby version
+## Learning Goals
+* Expose an API
+* Use serializers to format JSON responses
+* Test API exposure
+* Use SQL and AR to gather data
 
-* System dependencies
+## Technologies
+Project is created with:
+* Ruby version: 2.7.2
+* Rails version: 5.2.7
+* Postman
+* Simplecov
 
-* Configuration
+## Status
+Project is: _in progress_ with room to refactor and add further functionality.
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Contact
+Created by
+* [@bdempsey864](https://github.com/bdempsey864)
